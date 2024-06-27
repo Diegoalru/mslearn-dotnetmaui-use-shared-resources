@@ -2,42 +2,39 @@ namespace TipCalculator;
 
 public partial class StandardTipPage : ContentPage
 {
-    private Color colorNavy = Colors.Navy;
-    private Color colorSilver = Colors.Silver;
+    private readonly Color _colorNavy = Colors.Navy;
+    private readonly Color _colorSilver = Colors.Silver;
 
     public StandardTipPage()
     {
         InitializeComponent();
-        billInput.TextChanged += (s, e) => CalculateTip();
+        BillInput.TextChanged += (_, _) => CalculateTip();
     }
 
-    void CalculateTip()
+    private void CalculateTip()
     {
-        double bill;
+        if (!double.TryParse(BillInput.Text, out var bill) || !(bill > 0)) return;
 
-        if (Double.TryParse(billInput.Text, out bill) && bill > 0)
-        {
-            double tip = Math.Round(bill * 0.15, 2);
-            double final = bill + tip;
+        var tip = Math.Round(bill * 0.15, 2);
+        var final = bill + tip;
 
-            tipOutput.Text = tip.ToString("C");
-            totalOutput.Text = final.ToString("C");
-        }
+        TipOutput.Text = tip.ToString("C");
+        TotalOutput.Text = final.ToString("C");
     }
 
-    void OnLight(object sender, EventArgs e)
+    private void OnLight(object sender, EventArgs e)
     {
-        Resources["fgColor"] = colorNavy;
-        Resources["bgColor"] = colorSilver;
+        Resources["FgColor"] = _colorNavy;
+        Resources["BgColor"] = _colorSilver;
     }
 
-    void OnDark(object sender, EventArgs e)
+    private void OnDark(object sender, EventArgs e)
     {
-        Resources["fgColor"] = colorSilver;
-        Resources["bgColor"] = colorNavy;
+        Resources["FgColor"] = _colorSilver;
+        Resources["BgColor"] = _colorNavy;
     }
 
-    async void GotoCustom(object sender, EventArgs e)
+    private async void GotoCustom(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(CustomTipPage));
     }
